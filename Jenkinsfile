@@ -102,10 +102,10 @@ docker push harbor.alson.space/jenkins/yelb-appserver:1.1
       steps {
         sh '''kubectl cluster-info --context kind-demo
 kubectl get pod -A
-kubectl delete ns demo-app
-kubectl create ns demo-app
-kubectl apply -f ./dso-bootcamp-gp-01/deployments/platformdeployment/Kubernetes/yaml/yelb-k8s-minikube-nodeport.yaml -n demo-app
-kubectl get svc/yelb-ui -n demo-app'''
+kubectl delete ns dso-bootcamp-gp-01
+kubectl create ns dso-bootcamp-gp-01
+kubectl apply -f ./dso-bootcamp-gp-01/deployments/platformdeployment/Kubernetes/yaml/yelb-k8s-minikube-nodeport.yaml -n dso-bootcamp-gp-01
+kubectl get svc/yelb-ui -n dso-bootcamp-gp-01'''
       }
     }
 
