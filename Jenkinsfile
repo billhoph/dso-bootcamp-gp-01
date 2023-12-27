@@ -14,9 +14,9 @@ ls ./dso-bootcamp-gp-01'''
 
         stage('Clean up Images on Node') {
           steps {
-            sh 'docker rmi harbor.alson.space/jenkins/yelb-ui:1.1'
-            sh 'docker rmi harbor.alson.space/jenkins/yelb-db:1.1'
-            sh 'docker rmi harbor.alson.space/jenkins/yelb-appserver:1.1'
+            sh 'if docker image inspect harbor.alson.space/jenkins/yelb-ui:1.1 >/dev/null 2>&1; then docker rmi harbor.alson.space/jenkins/yelb-ui:1.1'
+            sh 'if docker image inspect harbor.alson.space/jenkins/yelb-db:1.1 >/dev/null 2>&1; then docker rmi harbor.alson.space/jenkins/yelb-db:1.1'
+            sh 'if docker image inspect harbor.alson.space/jenkins/yelb-appserver:1.1 >/dev/null 2>&1; then docker rmi harbor.alson.space/jenkins/yelb-appserver:1.1'
           }
         }
 
