@@ -33,19 +33,19 @@ ls ./dso-bootcamp-gp-01'''
       parallel {
         stage('Building UI app Image') {
           steps {
-            sh 'docker build ./dso-bootcamp-gp-01/yelb-ui -t harbor.alson.space/jenkins/yelb-ui:1.1'
+            sh 'docker build --no-cache ./dso-bootcamp-gp-01/yelb-ui -t harbor.alson.space/jenkins/yelb-ui:1.1'
           }
         }
 
         stage('Building DB Image') {
           steps {
-            sh 'docker build ./dso-bootcamp-gp-01/yelb-db -t harbor.alson.space/jenkins/yelb-db:1.1'
+            sh 'docker build --no-cache ./dso-bootcamp-gp-01/yelb-db -t harbor.alson.space/jenkins/yelb-db:1.1'
           }
         }
 
         stage('Building AppServer Image') {
           steps {
-            sh 'docker build ./dso-bootcamp-gp-01/yelb-appserver -t harbor.alson.space/jenkins/yelb-appserver:1.1'
+            sh 'docker build --no-cache ./dso-bootcamp-gp-01/yelb-appserver -t harbor.alson.space/jenkins/yelb-appserver:1.1'
           }
         }
 
