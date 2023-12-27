@@ -5,16 +5,18 @@ pipeline {
       parallel {
         stage('Git Checkout') {
           steps {
-            sh '''rm -Rf ./yelb-jenkins
+            sh '''rm -Rf ./dso-bootcamp-gp-01
 
-git clone https://github.com/billhoph/yelb-jenkins.git
-ls ./yelb-jenkins'''
+git clone https://github.com/billhoph/dso-bootcamp-gp-01.git
+ls ./dso-bootcamp-gp-01'''
           }
         }
 
         stage('Clean up Images on Node') {
           steps {
-            sh 'docker system prune -a -f'
+            sh 'docker rmi harbor.alson.space/jenkins/yelb-ui:1.1'
+            sh 'docker rmi harbor.alson.space/jenkins/yelb-db:1.1'
+            sh 'docker rmi harbor.alson.space/jenkins/yelb-appserver:1.1'
           }
         }
 
@@ -23,7 +25,7 @@ ls ./yelb-jenkins'''
 
     stage('Code Scanning') {
       steps {
-        sh 'checkov -d ./yelb-jenkins --use-enforcement-rules --prisma-api-url https://api.sg.prismacloud.io --bc-api-key $pcskey --repo-id jenkins-demo/code-checking --branch main -o cli --quiet --compact'
+        sh 'checkov -d ./dso-bootcamp-gp-01 --use-enforcement-rules --prisma-api-url https://api.sg.prismacloud.io --bc-api-key $pcskey --repo-id dso-bootcamp-gp-01/code-checking --branch main -o cli --quiet --compact'
       }
     }
 
@@ -31,19 +33,19 @@ ls ./yelb-jenkins'''
       parallel {
         stage('Building UI app Image') {
           steps {
-            sh 'docker build ./yelb-jenkins/yelb-ui -t harbor.alson.space/jenkins/yelb-ui:1.0'
+            sh 'docker build ./dso-bootcamp-gp-01/yelb-ui -t harbor.alson.space/jenkins/yelb-ui:1.1'
           }
         }
 
         stage('Building DB Image') {
           steps {
-            sh 'docker build ./yelb-jenkins/yelb-db -t harbor.alson.space/jenkins/yelb-db:1.0'
+            sh 'docker build ./dso-bootcamp-gp-01/yelb-db -t harbor.alson.space/jenkins/yelb-db:1.1'
           }
         }
 
         stage('Building AppServer Image') {
           steps {
-            sh 'docker build ./yelb-jenkins/yelb-appserver -t harbor.alson.space/jenkins/yelb-appserver:1.0'
+            sh 'docker build ./dso-bootcamp-gp-01/yelb-appserver -t harbor.alson.space/jenkins/yelb-appserver:1.1'
           }
         }
 
@@ -60,19 +62,19 @@ ls ./yelb-jenkins'''
       parallel {
         stage('Scanning Images (UI Image)') {
           steps {
-            prismaCloudScanImage(image: 'harbor.alson.space/jenkins/yelb-ui:1.0', resultsFile: './yelb-ui-scan.json', logLevel: 'info', dockerAddress: 'unix:///var/run/docker.sock')
+            prismaCloudScanImage(image: 'harbor.alson.space/jenkins/yelb-ui:1.1', resultsFile: './yelb-ui-scan.json', logLevel: 'info', dockerAddress: 'unix:///var/run/docker.sock')
           }
         }
 
         stage('Scanning Images (App Image)') {
           steps {
-            prismaCloudScanImage(image: 'harbor.alson.space/jenkins/yelb-appserver:1.0', resultsFile: './yelb-app-scan.json', logLevel: 'info', dockerAddress: 'unix:///var/run/docker.sock')
+            prismaCloudScanImage(image: 'harbor.alson.space/jenkins/yelb-appserver:1.1', resultsFile: './yelb-app-scan.json', logLevel: 'info', dockerAddress: 'unix:///var/run/docker.sock')
           }
         }
 
         stage('Scanning Images (DB Image)') {
           steps {
-            prismaCloudScanImage(dockerAddress: 'unix:///var/run/docker.sock', image: 'harbor.alson.space/jenkins/yelb-db:1.0', resultsFile: './yelb-db-scan.json', logLevel: 'info')
+            prismaCloudScanImage(dockerAddress: 'unix:///var/run/docker.sock', image: 'harbor.alson.space/jenkins/yelb-db:1.1', resultsFile: './yelb-db-scan.json', logLevel: 'info')
           }
         }
 
@@ -89,9 +91,9 @@ ls ./yelb-jenkins'''
     stage('Push Images to Harbor') {
       steps {
         sh '''docker login harbor.alson.space -u admin -p Harbor12345
-docker push harbor.alson.space/jenkins/yelb-ui:1.0
-docker push harbor.alson.space/jenkins/yelb-db:1.0
-docker push harbor.alson.space/jenkins/yelb-appserver:1.0
+docker push harbor.alson.space/jenkins/yelb-ui:1.1
+docker push harbor.alson.space/jenkins/yelb-db:1.1
+docker push harbor.alson.space/jenkins/yelb-appserver:1.1
 '''
       }
     }
@@ -102,7 +104,7 @@ docker push harbor.alson.space/jenkins/yelb-appserver:1.0
 kubectl get pod -A
 kubectl delete ns demo-app
 kubectl create ns demo-app
-kubectl apply -f ./yelb-jenkins/deployments/platformdeployment/Kubernetes/yaml/yelb-k8s-minikube-nodeport.yaml -n demo-app
+kubectl apply -f ./dso-bootcamp-gp-01/deployments/platformdeployment/Kubernetes/yaml/yelb-k8s-minikube-nodeport.yaml -n demo-app
 kubectl get svc/yelb-ui -n demo-app'''
       }
     }
