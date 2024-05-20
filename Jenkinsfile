@@ -25,7 +25,7 @@ ls ./dso-bootcamp-gp-01'''
 
     stage('Code Scanning') {
       steps {
-        sh 'checkov -d ./dso-bootcamp-gp-01 --use-enforcement-rules --prisma-api-url https://api.sg.prismacloud.io --bc-api-key $pcskey --repo-id dso-bootcamp-gp-01/code-checking --branch main -o cli --quiet --compact'
+        sh 'checkov -d ./dso-bootcamp-gp-01 --use-enforcement-rules --prisma-api-url https://api4.prismacloud.io  --bc-api-key $pcskey --repo-id dso-bootcamp-gp-01/code-checking --branch main -o cli --quiet --compact'
       }
     }
 
@@ -111,6 +111,6 @@ kubectl get svc/yelb-ui -n dso-bootcamp-gp-01'''
 
   }
   environment {
-    pcskey = '1c788e25-83ba-4b31-94d6-3f99234e2e46::DdgP+op52pyjTlAF+nnpkXxt0i4='
+    pcskey = '9d97698f-c9ee-4a53-b5e9-f50914aa1eea::47Y117gvD8H4bfoA3+rj6JRqk+E='
   }
 }
